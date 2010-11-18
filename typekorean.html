@@ -8,14 +8,56 @@
 </head>
 <body>
   <script type="text/javascript" charset="utf-8"><!--
-    function ascii2hangeul(str) {
-      return str;
-    }
+var vowels = {
+  'o' : 2, 'j' : 5, 'n' : 14,
+  'k' : 1, 'i' : 3, 'O' : 4,
+  'p' : 6, 'u' : 7, 'P' : 8,
+  'h' : 9, 'hk' : 10, 'ho' : 11,
+  'hl' : 12, 'y' : 13, 'nj' : 15,
+  'np' : 16, 'nl' : 17, 'b' : 18,
+  'm' : 19, 'ml' : 20, 'l' : 21 };
 
-    function refresh() {
-      document.forms[0].hangeul.value = ascii2hangeul(document.forms[0].ascii.value);
-    }
-    // -->
+var initial_consonants = {
+  'd' : 12, 'Q' : 9, 's' : 3,
+  'r' : 1, 'R' : 2, 'e' : 4,
+  'E' : 5, 'f' : 6, 'a' : 7,
+  'q' : 8, 't' : 10, 'T' : 11,
+  'w' : 13, 'W' : 14, 'c' : 15,
+  'z' : 16, 'x' : 17, 'v' : 18,
+  'g' : 19 };
+
+var final_consonants = {
+  'fq' : 11, 'ft' : 12, 'x' : 25,
+  'r' : 1, 'R' : 2, 'rt' : 3,
+  's' : 4, 'sw' : 5, 'sg' : 6,
+  'e' : 7, 'f' : 8, 'fr' : 9,
+  'fa' : 10, 'fe' : 13, 'fv' : 14,
+  'fg' : 15, 'a' : 16, 'q' : 17,
+  'qt' : 18, 't' : 19, 'T' : 20,
+  'd' : 21, 'w' : 22, 'c' : 23,
+  'z' : 24, 'v' : 26, 'g' : 27 };
+
+function ascii2hangeul(str) {
+  return char2hangeul(str);
+}
+
+function unichr(c) {
+  var uni = '"\\u' + c.toString(16)+'"';
+  return eval(uni);
+}
+
+function char2hangeul(chr) {
+  lead = initial_consonants[chr.charAt(0)];
+  vowel = vowels[chr.charAt(1)];
+  tail = final_consonants[chr.charAt(2)];
+  if (!tail) tail = 0;
+  return unichr(tail + (vowel-1) * 28 + (lead-1) * 588 + 44032);
+}
+
+function refresh() {
+  document.forms[0].hangeul.value = ascii2hangeul(document.forms[0].ascii.value);
+}
+// -->
   </script>
   <form>
     <p><textarea name="ascii" rows="8" cols="40" onkeydown="refresh()" onkeyup="refresh()"></textarea></p>

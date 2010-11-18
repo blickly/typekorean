@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <title>Typekorean</title>
+</head>
+<body>
+  <script type="text/javascript" charset="utf-8"><!--
+    function ascii2hangeul(str) {
+      return str;
+    }
+
+    function refresh() {
+      document.forms[0].hangeul.value = ascii2hangeul(document.forms[0].ascii.value);
+    }
+    // -->
+  </script>
+  <form>
+    <p><textarea name="ascii" rows="8" cols="40" onkeydown="refresh()" onkeyup="refresh()"></textarea></p>
+    <p><textarea name="hangeul" rows="8" cols="40"></textarea></p>
+  </form>
+</body>
+</html>

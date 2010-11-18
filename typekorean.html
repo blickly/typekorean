@@ -16,7 +16,6 @@ var vowels = {
   'hl' : 12, 'y' : 13, 'nj' : 15,
   'np' : 16, 'nl' : 17, 'b' : 18,
   'm' : 19, 'ml' : 20, 'l' : 21 };
-
 var initial_consonants = {
   'd' : 12, 'Q' : 9, 's' : 3,
   'r' : 1, 'R' : 2, 'e' : 4,
@@ -25,7 +24,6 @@ var initial_consonants = {
   'w' : 13, 'W' : 14, 'c' : 15,
   'z' : 16, 'x' : 17, 'v' : 18,
   'g' : 19 };
-
 var final_consonants = {
   'fq' : 11, 'ft' : 12, 'x' : 25,
   'r' : 1, 'R' : 2, 'rt' : 3,
@@ -46,11 +44,26 @@ function unichr(c) {
   return eval(uni);
 }
 
+function isVowel(c) {
+  vowelKeys = 'yuiophjklbnmOP';
+  return vowelKeys.indexOf(c.toLowerCase()) != -1;
+}
+
+function isConsonant(c) {
+  consonantKeys = 'qwertasdfgzxcvQWERT';
+  return consonantKeys.indexOf(c.toLowerCase()) != -1;
+}
+
 function char2hangeul(chr) {
   lead = initial_consonants[chr.charAt(0)];
-  vowel = vowels[chr.charAt(1)];
-  tail = final_consonants[chr.charAt(2)];
-  if (!tail) tail = 0;
+  vowellength = (chr.length > 2 && isVowel(chr.charAt(2))) ? 2 : 1;
+  vowel = vowels[chr.substr(1,vowellength)];
+  chr = chr.substr(1+vowellength);
+  if (chr != "") {
+    tail = final_consonants[chr];
+  } else {
+    tail = 0;
+  }
   return unichr(tail + (vowel-1) * 28 + (lead-1) * 588 + 44032);
 }
 

@@ -36,7 +36,7 @@ var final_consonants = {
   'z' : 24, 'v' : 26, 'g' : 27 };
 
 function ascii2hangeul(str) {
-  return char2hangeul(str);
+  return word2characters(str).map(char2hangeul).join("");
 }
 
 function unichr(c) {
@@ -52,6 +52,27 @@ function isVowel(c) {
 function isConsonant(c) {
   consonantKeys = 'qwertasdfgzxcvQWERT';
   return consonantKeys.indexOf(c.toLowerCase()) != -1;
+}
+
+function word2characters(ascii_word) {
+  var character_list = [];
+  cur_str = ascii_word.substr(0,2);
+  ascii_word = ascii_word.substr(2);
+  while (ascii_word != "") {
+    if (ascii_word.length < 2) {
+      character_list.push(cur_str + ascii_word);
+      return character_list;
+    } else if (isVowel(ascii_word.charAt(1))) {
+      character_list.push(cur_str);
+      cur_str = ascii_word.substr(0,2);
+      ascii_word = ascii_word.substr(2);
+    } else {
+      cur_str = cur_str + ascii_word.substr(0,1);
+      ascii_word = ascii_word.substr(1);
+    }
+  }
+  character_list.push(cur_str);
+  return character_list;
 }
 
 function char2hangeul(chr) {

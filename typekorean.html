@@ -89,6 +89,7 @@ function word2hangeul(ascii_word) {
 }
 
 function unichr(c) {
+  if (!c) c = 9785;
   var uni = '"\\u' + c.toString(16)+'"';
   return eval(uni);
 }

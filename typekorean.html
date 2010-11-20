@@ -35,13 +35,12 @@ var final_consonants = {
   'd' : 21, 'w' : 22, 'c' : 23,
   'z' : 24, 'v' : 26, 'g' : 27 };
 
-function ascii2hangeul(str) {
-  return word2hangeul(str);
+function refresh() {
+  document.forms[0].hangeul.value = ascii2hangeul(document.forms[0].ascii.value);
 }
 
-function unichr(c) {
-  var uni = '"\\u' + c.toString(16)+'"';
-  return eval(uni);
+function ascii2hangeul(str) {
+  return str.split(' ').map(word2hangeul);
 }
 
 function isVowel(c) {
@@ -75,6 +74,11 @@ function word2hangeul(ascii_word) {
   return hangeul_word;
 }
 
+function unichr(c) {
+  var uni = '"\\u' + c.toString(16)+'"';
+  return eval(uni);
+}
+
 function char2hangeul(chr) {
   lead = initial_consonants[chr.charAt(0)];
   vowellength = (chr.length > 2 && isVowel(chr.charAt(2))) ? 2 : 1;
@@ -86,10 +90,6 @@ function char2hangeul(chr) {
     tail = 0;
   }
   return unichr(tail + (vowel-1) * 28 + (lead-1) * 588 + 44032);
-}
-
-function refresh() {
-  document.forms[0].hangeul.value = ascii2hangeul(document.forms[0].ascii.value);
 }
 // -->
   </script>

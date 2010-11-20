@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <title>Typekorean</title>
+</head>
+<body>
+  <script type="text/javascript" charset="utf-8"><!--
+var vowels = {
+  'o' : 2, 'j' : 5, 'n' : 14,
+  'k' : 1, 'i' : 3, 'O' : 4,
+  'p' : 6, 'u' : 7, 'P' : 8,
+  'h' : 9, 'hk' : 10, 'ho' : 11,
+  'hl' : 12, 'y' : 13, 'nj' : 15,
+  'np' : 16, 'nl' : 17, 'b' : 18,
+  'm' : 19, 'ml' : 20, 'l' : 21 };
+var initial_consonants = {
+  'd' : 12, 'Q' : 9, 's' : 3,
+  'r' : 1, 'R' : 2, 'e' : 4,
+  'E' : 5, 'f' : 6, 'a' : 7,
+  'q' : 8, 't' : 10, 'T' : 11,
+  'w' : 13, 'W' : 14, 'c' : 15,
+  'z' : 16, 'x' : 17, 'v' : 18,
+  'g' : 19 };
+var final_consonants = {
+  'fq' : 11, 'ft' : 12, 'x' : 25,
+  'r' : 1, 'R' : 2, 'rt' : 3,
+  's' : 4, 'sw' : 5, 'sg' : 6,
+  'e' : 7, 'f' : 8, 'fr' : 9,
+  'fa' : 10, 'fe' : 13, 'fv' : 14,
+  'fg' : 15, 'a' : 16, 'q' : 17,
+  'qt' : 18, 't' : 19, 'T' : 20,
+  'd' : 21, 'w' : 22, 'c' : 23,
+  'z' : 24, 'v' : 26, 'g' : 27 };
+
+function refresh() {
+  document.forms[0].hangeul.value = ascii2hangeul(document.forms[0].ascii.value);
+}
+
+function ascii2hangeul(str) {
+  alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  result = "";
+  cur_str = "";
+  for (var i = 0; i < str.length; i++) {
+    c = str.charAt(i);
+    if (alpha.indexOf(c) == -1) {
+      result += word2hangeul(cur_str) + c;
+      cur_str = "";
+    } else {
+      cur_str += c;
+    }
+  }
+  result += word2hangeul(cur_str);
+  return result;
+}
+
+function isVowel(c) {
+  vowelKeys = 'yuiophjklbnmOP';
+  return vowelKeys.indexOf(c.toLowerCase()) != -1;
+}
+
+function isConsonant(c) {
+  consonantKeys = 'qwertasdfgzxcvQWERT';
+  return consonantKeys.indexOf(c.toLowerCase()) != -1;
+}
+
+function word2hangeul(ascii_word) {
+  if (ascii_word == "") return "";
+  hangeul_word = "";
+  cur_str = ascii_word.substr(0,2);
+  ascii_word = ascii_word.substr(2);
+  while (ascii_word != "") {
+    if (ascii_word.length < 2) {
+      hangeul_word += char2hangeul(cur_str + ascii_word);
+      return hangeul_word;
+    } else if (isVowel(ascii_word.charAt(1))) {
+      hangeul_word += char2hangeul(cur_str);
+      cur_str = ascii_word.substr(0,2);
+      ascii_word = ascii_word.substr(2);
+    } else {
+      cur_str = cur_str + ascii_word.substr(0,1);
+      ascii_word = ascii_word.substr(1);
+    }
+  }
+  hangeul_word += char2hangeul(cur_str);
+  return hangeul_word;
+}
+
+function unichr(c) {
+  if (!c) c = 9785;
+  var uni = '"\\u' + c.toString(16)+'"';
+  return eval(uni);
+}
+
+function char2hangeul(chr) {
+  lead = initial_consonants[chr.charAt(0)];
+  vowellength = (chr.length > 2 && isVowel(chr.charAt(2))) ? 2 : 1;
+  vowel = vowels[chr.substr(1,vowellength)];
+  chr = chr.substr(1+vowellength);
+  if (chr != "") {
+    tail = final_consonants[chr];
+  } else {
+    tail = 0;
+  }
+  return unichr(tail + (vowel-1) * 28 + (lead-1) * 588 + 44032);
+}
+// -->
+  </script>
+  <form>
+    <p><textarea name="ascii" rows="8" cols="40" onkeydown="refresh()" onkeyup="refresh()"></textarea></p>
+    <p><textarea name="hangeul" rows="8" cols="40"></textarea></p>
+  </form>
+</body>
+</html>

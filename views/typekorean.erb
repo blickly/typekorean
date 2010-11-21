@@ -107,14 +107,13 @@ function word2hangeul2(str) {
     } else if (isVowel(next)) {
       result += singlejamo(next);
       continue;
-    } else if (!isConsonant(next)) alert("Error!");
-    /*else if (!isConsonant(next)) {
-      result += next;
-      i++;
+    } else if (isInitialConsonant(next)) {
+      lead = next;
+    } else if (isFinalConsonatn(next)) {
+      result += singlejamo(next);
       continue;
-    }*/
+    } else alert("Error!");
     // We have an initial consonant
-    lead = next;
     next = str.substr(i,1);
     i++;
     if (next == "") {
@@ -122,6 +121,7 @@ function word2hangeul2(str) {
       break;
     } else if (isConsonant(next)) {
       result += singlejamo(lead);
+      i--;
       continue;
     } else if (isVowel(next)) {
       mid = next;
@@ -135,13 +135,24 @@ function word2hangeul2(str) {
     } else if (isVowel(next)) {
       if (isVowel(mid+next)) {
         mid = mid+next;
+        next = str.substr(i,1);
+        i++;
       } else {
         result += char2hangeul(lead + mid) + singlejamo(next);
         continue;
       }
-    } else if (!isConsonant(next)) alert("Error!");
+    }
+    if (next == "") {
+      result += char2hangeul(lead + mid);
+      break;
+    } else if (isFinalConsonant(next)) {
+      end = next;
+    } else if (isInitialConsonant(next) || isVowel(next)) {
+      result += char2hangeul(lead + mid);
+      i--;
+      continue;
+    } else alert("Error!");
     // We have a consonant following the vowel.
-    end = next;
     next = str.substr(i,1);
     i++;
     if (next == "") {
@@ -151,12 +162,16 @@ function word2hangeul2(str) {
       result += char2hangeul(lead + mid);
       i -= 2;
       continue;
-    } else if (isConsonant(next)) {
-      if (!isConsonant(end + next)) {
+    } else if (isFinalConsonant(next)) {
+      if (!isFinalConsonant(end + next)) {
         result += char2hangeul(lead + mid + end);
         i--;
         continue;
       }
+    } else if (isInitialConsonant(next)) {
+      result += char2hangeul(lead + mid + end);
+      i--;
+      continue;
     } else alert("Error!");
     // We have two compatible consonants following the vowel.
     end2 = next;

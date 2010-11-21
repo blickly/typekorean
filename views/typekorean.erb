@@ -40,6 +40,7 @@ function refresh() {
 }
 
 function ascii2hangeul(str) {
+  return str.split("").map(singlejamo);
   alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   result = "";
   cur_str = "";
@@ -86,6 +87,16 @@ function word2hangeul(ascii_word) {
   }
   hangeul_word += char2hangeul(cur_str);
   return hangeul_word;
+}
+
+function singlejamo(ascii) {
+  var c;
+  if (isConsonant(ascii)) {
+    c = 0x1100 - 1 + initial_consonants[ascii];
+  } else if (isVowel(ascii)) {
+    c = 0x1160 + vowels[ascii];
+  }
+  return unichr(c);
 }
 
 function unichr(c) {

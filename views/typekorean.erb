@@ -40,7 +40,7 @@ function refresh() {
 }
 
 function ascii2hangeul(str) {
-  return str.split("").map(singlejamo);
+  //return str.split("").map(singlejamo);
   alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   result = "";
   cur_str = "";
@@ -58,13 +58,19 @@ function ascii2hangeul(str) {
 }
 
 function isVowel(c) {
-  vowelKeys = 'yuiophjklbnmOP';
-  return vowelKeys.indexOf(c.toLowerCase()) != -1;
+  return (vowels[c] != null)
 }
 
 function isConsonant(c) {
-  consonantKeys = 'qwertasdfgzxcvQWERT';
-  return consonantKeys.indexOf(c.toLowerCase()) != -1;
+  return (isInitialConsonant(c) || isFinalConsonant(c));
+}
+
+function isFinalConsonant(c) {
+  return (final_consonants[c] != null)
+}
+
+function isInitialConsonant(c) {
+  return (final_consonants[c] != null)
 }
 
 function word2hangeul(ascii_word) {

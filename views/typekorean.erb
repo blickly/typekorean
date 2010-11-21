@@ -95,6 +95,89 @@ function word2hangeul(ascii_word) {
   return hangeul_word;
 }
 
+function word2hangeul2(str) {
+  var i = 0;
+  result = "";
+  while (str.length > i) {
+    var lead, mid, end;
+    next = str.substr(i,1);
+    i++;
+    if (next == "") {
+      break;
+    } else if (isVowel(next)) {
+      result += singlejamo(next);
+      continue;
+    } else if (!isConsonant(next)) alert("Error!");
+    /*else if (!isConsonant(next)) {
+      result += next;
+      i++;
+      continue;
+    }*/
+    // We have an initial consonant
+    lead = next;
+    next = str.substr(i,1);
+    i++;
+    if (next == "") {
+      result += singlejamo(lead);
+      break;
+    } else if (isConsonant(next)) {
+      result += singlejamo(lead);
+      continue;
+    } else if (isVowel(next)) {
+      mid = next;
+    } else alert("Error!");
+    // We have a vowel
+    next = str.substr(i,1);
+    i++;
+    if (next == "") {
+      result += char2hangeul(lead + mid);
+      break;
+    } else if (isVowel(next)) {
+      if (isVowel(mid+next)) {
+        mid = mid+next;
+      } else {
+        result += char2hangeul(lead + mid) + singlejamo(next);
+        continue;
+      }
+    } else if (!isConsonant(next)) alert("Error!");
+    // We have a consonant following the vowel.
+    end = next;
+    next = str.substr(i,1);
+    i++;
+    if (next == "") {
+      result += char2hangeul(lead + mid + end);
+      break;
+    } else if (isVowel(next)) {
+      result += char2hangeul(lead + mid);
+      i -= 2;
+      continue;
+    } else if (isConsonant(next)) {
+      if (!isConsonant(end + next)) {
+        result += char2hangeul(lead + mid + end);
+        i--;
+        continue;
+      }
+    } else alert("Error!");
+    // We have two compatible consonants following the vowel.
+    end2 = next;
+    next = str.substr(i,1);
+    i++;
+    if (next == "") {
+      result += char2hangeul(lead + mid + end + end2);
+      break;
+    } else if (isConsonant(next)) {
+      result += char2hangeul(lead + mid + end + end2);
+      i--;
+      continue;
+    } else if (isVowel(next)) {
+      result += char2hangeul(lead+mid+end);
+      i -= 2;
+      continue;
+    }
+  }
+  return result;
+}
+
 function singlejamo(ascii) {
   var c;
   if (isConsonant(ascii)) {
@@ -112,6 +195,7 @@ function unichr(c) {
 }
 
 function char2hangeul(chr) {
+  if (chr.length == 1) return singlejamo(chr);
   lead = initial_consonants[chr.charAt(0)];
   vowellength = (chr.length > 2 && isVowel(chr.charAt(2))) ? 2 : 1;
   vowel = vowels[chr.substr(1,vowellength)];

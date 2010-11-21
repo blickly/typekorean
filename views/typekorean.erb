@@ -47,13 +47,13 @@ function ascii2hangeul(str) {
   for (var i = 0; i < str.length; i++) {
     c = str.charAt(i);
     if (alpha.indexOf(c) == -1) {
-      result += word2hangeul(cur_str) + c;
+      result += word2hangeul2(cur_str) + c;
       cur_str = "";
     } else {
       cur_str += c;
     }
   }
-  result += word2hangeul(cur_str);
+  result += word2hangeul2(cur_str);
   return result;
 }
 

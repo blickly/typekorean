@@ -86,7 +86,7 @@ function word2hangeul(str) {
       end2 = str.substr(i,2);
       nextchar1 = str.substr(i+1,1);
       end1 = str.substr(i,1);
-      if (isFinalConsonant(end2) && (!isVowel(nextchar1) || nextchar1 == "")) {
+      if (isFinalConsonant(end2) && (!isVowel(nextchar2) || nextchar2 == "")) {
         end = end2;
       } else if (isFinalConsonant(end1) && (!isVowel(nextchar1) || nextchar1 == "")) {
         end = end1;

@@ -40,69 +40,30 @@ function refresh() {
 }
 
 function ascii2hangeul(str) {
-  //return str.split("").map(singlejamo);
   alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   result = "";
   cur_str = "";
   for (var i = 0; i < str.length; i++) {
     c = str.charAt(i);
     if (alpha.indexOf(c) == -1) {
-      result += word2hangeul3(cur_str) + c;
+      result += word2hangeul(cur_str) + c;
       cur_str = "";
     } else {
       cur_str += c;
     }
   }
-  result += word2hangeul3(cur_str);
+  result += word2hangeul(cur_str);
   return result;
 }
 
-function isVowel(c) {
-  return (vowels[c] != null)
-}
-
-function isConsonant(c) {
-  return (isInitialConsonant(c) || isFinalConsonant(c));
-}
-
-function isFinalConsonant(c) {
-  return (final_consonants[c] != null)
-}
-
-function isInitialConsonant(c) {
-  return (final_consonants[c] != null)
-}
-
-function word2hangeul(ascii_word) {
-  if (ascii_word == "") return "";
-  hangeul_word = "";
-  cur_str = ascii_word.substr(0,2);
-  ascii_word = ascii_word.substr(2);
-  while (ascii_word != "") {
-    if (ascii_word.length < 2) {
-      hangeul_word += char2hangeul(cur_str + ascii_word);
-      return hangeul_word;
-    } else if (isVowel(ascii_word.charAt(1))) {
-      hangeul_word += char2hangeul(cur_str);
-      cur_str = ascii_word.substr(0,2);
-      ascii_word = ascii_word.substr(2);
-    } else {
-      cur_str = cur_str + ascii_word.substr(0,1);
-      ascii_word = ascii_word.substr(1);
-    }
-  }
-  hangeul_word += char2hangeul(cur_str);
-  return hangeul_word;
-}
-
-function word2hangeul3(str) {
+function word2hangeul(str) {
   var result = "";
   var lead, mid, end;
   var state = "start";
   for (var i = 0;;) {
     if (state == "start") {
       result += tochar(lead, mid, end);
-      lead = (mid = (end = ""));
+      mid = (end = "");
       lead = str.substr(i,1);
       if (lead == "") {
         break;
@@ -125,9 +86,9 @@ function word2hangeul3(str) {
       end2 = str.substr(i,2);
       nextchar1 = str.substr(i+1,1);
       end1 = str.substr(i,1);
-      if (isFinalConsonant(end2) && (isConsonant(nextchar1) || nextchar1 == "")) {
+      if (isFinalConsonant(end2) && (!isVowel(nextchar1) || nextchar1 == "")) {
         end = end2;
-      } else if (isFinalConsonant(end1) && (isConsonant(nextchar1) || nextchar1 == "")) {
+      } else if (isFinalConsonant(end1) && (!isVowel(nextchar1) || nextchar1 == "")) {
         end = end1;
       }
       i += end.length;
@@ -138,7 +99,7 @@ function word2hangeul3(str) {
 }
 
 function tochar(start, mid, end) {
-  if (!start && !mid && !end) {
+  if (!start) {
     return "";
   } else if (!mid) {
     return singlejamo(start);
@@ -147,104 +108,6 @@ function tochar(start, mid, end) {
   vowel = vowels[mid];
   tail = end ? final_consonants[end] : 0;
   return unichr(tail + (vowel-1) * 28 + (lead-1) * 588 + 44032);
-}
-
-function word2hangeul2(str) {
-  var i = 0;
-  result = "";
-  while (str.length > i) {
-    var lead, mid, end;
-    next = str.substr(i,1);
-    i++;
-    if (next == "") {
-      break;
-    } else if (isVowel(next)) {
-      result += singlejamo(next);
-      continue;
-    } else if (isInitialConsonant(next)) {
-      lead = next;
-    } else if (isFinalConsonatn(next)) {
-      result += singlejamo(next);
-      continue;
-    } else alert("Error!");
-    // We have an initial consonant
-    next = str.substr(i,1);
-    i++;
-    if (next == "") {
-      result += singlejamo(lead);
-      break;
-    } else if (isConsonant(next)) {
-      result += singlejamo(lead);
-      i--;
-      continue;
-    } else if (isVowel(next)) {
-      mid = next;
-    } else alert("Error!");
-    // We have a vowel
-    next = str.substr(i,1);
-    i++;
-    if (next == "") {
-      result += char2hangeul(lead + mid);
-      break;
-    } else if (isVowel(next)) {
-      if (isVowel(mid+next)) {
-        mid = mid+next;
-        next = str.substr(i,1);
-        i++;
-      } else {
-        result += char2hangeul(lead + mid) + singlejamo(next);
-        continue;
-      }
-    }
-    if (next == "") {
-      result += char2hangeul(lead + mid);
-      break;
-    } else if (isFinalConsonant(next)) {
-      end = next;
-    } else if (isInitialConsonant(next) || isVowel(next)) {
-      result += char2hangeul(lead + mid);
-      i--;
-      continue;
-    } else alert("Error!");
-    // We have a consonant following the vowel.
-    next = str.substr(i,1);
-    i++;
-    if (next == "") {
-      result += char2hangeul(lead + mid + end);
-      break;
-    } else if (isVowel(next)) {
-      result += char2hangeul(lead + mid);
-      i -= 2;
-      continue;
-    } else if (isFinalConsonant(next)) {
-      if (!isFinalConsonant(end + next)) {
-        result += char2hangeul(lead + mid + end);
-        i--;
-        continue;
-      }
-    } else if (isInitialConsonant(next)) {
-      result += char2hangeul(lead + mid + end);
-      i--;
-      continue;
-    } else alert("Error!");
-    // We have two compatible consonants following the vowel.
-    end2 = next;
-    next = str.substr(i,1);
-    i++;
-    if (next == "") {
-      result += char2hangeul(lead + mid + end + end2);
-      break;
-    } else if (isConsonant(next)) {
-      result += char2hangeul(lead + mid + end + end2);
-      i--;
-      continue;
-    } else if (isVowel(next)) {
-      result += char2hangeul(lead+mid+end);
-      i -= 2;
-      continue;
-    }
-  }
-  return result;
 }
 
 function singlejamo(ascii) {
@@ -263,18 +126,17 @@ function unichr(c) {
   return eval(uni);
 }
 
-function char2hangeul(chr) {
-  if (chr.length == 1) return singlejamo(chr);
-  lead = initial_consonants[chr.charAt(0)];
-  vowellength = (chr.length > 2 && isVowel(chr.charAt(2))) ? 2 : 1;
-  vowel = vowels[chr.substr(1,vowellength)];
-  chr = chr.substr(1+vowellength);
-  if (chr != "") {
-    tail = final_consonants[chr];
-  } else {
-    tail = 0;
-  }
-  return unichr(tail + (vowel-1) * 28 + (lead-1) * 588 + 44032);
+function isVowel(c) {
+  return (vowels[c] != null)
+}
+function isConsonant(c) {
+  return (isInitialConsonant(c) || isFinalConsonant(c));
+}
+function isFinalConsonant(c) {
+  return (final_consonants[c] != null)
+}
+function isInitialConsonant(c) {
+  return (final_consonants[c] != null)
 }
 // -->
   </script>

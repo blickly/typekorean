@@ -47,13 +47,13 @@ function ascii2hangeul(str) {
   for (var i = 0; i < str.length; i++) {
     c = str.charAt(i);
     if (alpha.indexOf(c) == -1) {
-      result += word2hangeul2(cur_str) + c;
+      result += word2hangeul3(cur_str) + c;
       cur_str = "";
     } else {
       cur_str += c;
     }
   }
-  result += word2hangeul2(cur_str);
+  result += word2hangeul3(cur_str);
   return result;
 }
 
@@ -93,6 +93,60 @@ function word2hangeul(ascii_word) {
   }
   hangeul_word += char2hangeul(cur_str);
   return hangeul_word;
+}
+
+function word2hangeul3(str) {
+  var result = "";
+  var lead, mid, end;
+  var state = "start";
+  for (var i = 0;;) {
+    if (state == "start") {
+      result += tochar(lead, mid, end);
+      lead = (mid = (end = ""));
+      lead = str.substr(i,1);
+      if (lead == "") {
+        break;
+      } else if (isInitialConsonant(lead)) {
+        state = "vowel";
+      }
+      i += lead.length;
+    } else if (state == "vowel") {
+      if (isVowel(str.substr(i,2))) {
+        mid = str.substr(i,2);
+      } else if (isVowel(str.substr(i,1))) {
+        mid = str.substr(i,1)
+      } else {
+        state = "start"; continue
+      }
+      state = "finalConsonant";
+      i += mid.length;
+    } else if (state = "finalConsonant") {
+      nextchar2 = str.substr(i+2,1);
+      end2 = str.substr(i,2);
+      nextchar1 = str.substr(i+1,1);
+      end1 = str.substr(i,1);
+      if (isFinalConsonant(end2) && (isConsonant(nextchar1) || nextchar1 == "")) {
+        end = end2;
+      } else if (isFinalConsonant(end1) && (isConsonant(nextchar1) || nextchar1 == "")) {
+        end = end1;
+      }
+      i += end.length;
+      state = "start";
+    }
+  }
+  return result;
+}
+
+function tochar(start, mid, end) {
+  if (!start && !mid && !end) {
+    return "";
+  } else if (!mid) {
+    return singlejamo(start);
+  }
+  lead = initial_consonants[start];
+  vowel = vowels[mid];
+  tail = end ? final_consonants[end] : 0;
+  return unichr(tail + (vowel-1) * 28 + (lead-1) * 588 + 44032);
 }
 
 function word2hangeul2(str) {

@@ -41,5 +41,41 @@ describe("ascii2hangeul", function() {
 
     });
 
+    describe("made of a consonant + vowel + ending consonant", function() {
+
+      it("should handle '각'", function() {
+        expect(ascii2hangeul('rkr')).toEqual('각');
+      });
+
+      it("should handle '짱'", function() {
+        expect(ascii2hangeul('Wkd')).toEqual('짱');
+      });
+
+      it("should handle '황'", function() {
+        expect(ascii2hangeul('ghkd')).toEqual('황');
+      });
+
+      it("should handle '뜅'", function() {
+        expect(ascii2hangeul('Enld')).toEqual('뜅');
+      });
+
+      it("should handle '닭'", function() {
+        expect(ascii2hangeul('ekfr')).toEqual('닭');
+      });
+
+      it("should handle '짦'", function() {
+        expect(ascii2hangeul('Wkfa')).toEqual('짦');
+      });
+
+      it("should handle '홗'", function() {
+        expect(ascii2hangeul('ghkrt')).toEqual('홗');
+      });
+
+      it("should handle '뛹'", function() {
+        expect(ascii2hangeul('Enlfr')).toEqual('뜅뛹');
+      });
+
+    });
+
   });
 });

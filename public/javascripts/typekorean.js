@@ -101,11 +101,16 @@ function tochar(start, mid, end) {
 }
 
 function singlejamo(ascii) {
+  var compatibility_consonants = {
+    'r' : 0x3131, 'R' : 0x3132, 's' : 0x3134, 'e' : 0x3137, 'E' : 0x3138,
+    'f' : 0x3139, 'a' : 0x3141, 'q' : 0x3142, 'Q' : 0x3143, 't' : 0x3145,
+    'T' : 0x3146, 'd' : 0x3147, 'w' : 0x3148, 'W' : 0x3149, 'c' : 0x314A,
+    'z' : 0x314B, 'x' : 0x314C, 'v' : 0x314D, 'g' : 0x314E }
   var c;
   if (isConsonant(ascii)) {
-    c = 0x1100 - 1 + initial_consonants[ascii];
+    c = compatibility_consonants[ascii];
   } else if (isVowel(ascii)) {
-    c = 0x1160 + vowels[ascii];
+    c = 0x314E + vowels[ascii];
   }
   return unichr(c);
 }

@@ -72,10 +72,35 @@ describe("ascii2hangeul", function() {
       });
 
       it("should handle '뛹'", function() {
-        expect(ascii2hangeul('Enlfr')).toEqual('뜅뛹');
+        expect(ascii2hangeul('Enlfr')).toEqual('뛹');
       });
 
     });
+
+  });
+
+  describe("for a pair of characters", function() {
+
+      it("should handle '가가'", function() {
+        expect(ascii2hangeul('rkrk')).toEqual('가가');
+      });
+
+      it("should handle '닭이'", function() {
+        expect(ascii2hangeul('ekfrdl')).toEqual('닭이');
+      });
+
+      it("should handle '닭과'", function() {
+        expect(ascii2hangeul('ekfrrhk')).toEqual('닭과');
+      });
+
+      it("should handle '생과'", function() {
+        expect(ascii2hangeul('todrhk')).toEqual('생과');
+      });
+
+      it("should handle '뛹쫢'", function() {
+        expect(ascii2hangeul('EnlfrWhkfa')).toEqual('뛹쫢');
+      });
+
 
   });
 });

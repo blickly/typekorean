@@ -81,6 +81,7 @@ describe("ascii2hangeul", function() {
 
   describe("for a pair of characters", function() {
 
+    describe("that are both well-formed", function() {
       it("should handle '가가'", function() {
         expect(ascii2hangeul('rkrk')).toEqual('가가');
       });
@@ -100,6 +101,27 @@ describe("ascii2hangeul", function() {
       it("should handle '뛹쫢'", function() {
         expect(ascii2hangeul('EnlfrWhkfa')).toEqual('뛹쫢');
       });
+    });
+
+    describe("that have some single jamo", function() {
+      it("should handle cases where there are two jamo", function() {
+        expect(ascii2hangeul('zz')).toEqual('ㅋㅋ');
+        expect(ascii2hangeul('gg')).toEqual('ㅎㅎ');
+        expect(ascii2hangeul('nb')).toEqual('ㅜㅠ');
+        expect(ascii2hangeul('dd')).toEqual('ㅇㅇ');
+      });
+
+      it("should handle cases where the jamo is at the end", function() {
+        expect(ascii2hangeul('rkE')).toEqual('가ㄸ');
+        expect(ascii2hangeul('rkfrr')).toEqual('갉ㄱ');
+        expect(ascii2hangeul('ghkdt')).toEqual('황ㅅ');
+      });
+
+      it("should handle cases where the jamo is at the beginning", function() {
+        expect(ascii2hangeul('zrk')).toEqual('ㅋ가');
+        expect(ascii2hangeul('gdk')).toEqual('ㅎ아');
+      });
+    });
 
 
   });

@@ -4,13 +4,13 @@ describe("ascii2hangeul", function() {
 
     describe("made of a single jamo", function() {
 
-      it("should be able to print a single 자음", function() {
-        //expect(ascii2hangeul("r")).toEqual("ㄱ");
-        //expect(ascii2hangeul("r")).toEqual("ᄀ");
-        //var hangeul_consonants='ᄀᄁᄂᄃᄄᄅᄆᄇᄈᄉᄊᄋᄌᄍᄎᄏᄐᄑᄒ';
+      it("should handle 'ㄱ'", function() {
+        expect(ascii2hangeul('r')).toEqual('ㄱ');
+      });
+
+      it("should handle each individual jamos", function() {
         var ascii_jamo = 'qwertyuiopasdfghjklzxcvbnmQWERTOP';
-        var hangeul_compatibiltiy_jamo = 'ㅂㅈㄷㄱㅅㅛㅕㅑㅐㅔㅁㄴㅇㄹㅎㅗㅓㅏㅣㅋㅌㅊㅍ
-        var hangeul_jamo = 'ᄇᄌᄃᄀ쇼ᅧᅣᅢᅦᄆᄂᄋᄅ호ᅥᅡᅵᄏᄐᄎ퓨ᅮᅳᄈᄍᄄᄁ썌ᅨ';
+        var hangeul_compatibility_jamo = 'ㅂㅈㄷㄱㅅㅛㅕㅑㅐㅔㅁㄴㅇㄹㅎㅗㅓㅏㅣㅋㅌㅊㅍㅠㅜㅡㅃㅉㄸㄲㅆㅒㅖ';
 
         var l = ascii_jamo.length;
         for (var i = 0; i < l; i++) {

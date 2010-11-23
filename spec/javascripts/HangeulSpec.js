@@ -21,5 +21,25 @@ describe("ascii2hangeul", function() {
       });
     });
 
+    describe("made of a consonant + vowel", function() {
+
+      it("should handle '가'", function() {
+        expect(ascii2hangeul('rk')).toEqual('가');
+      });
+
+      it("should handle '짜'", function() {
+        expect(ascii2hangeul('Wk')).toEqual('짜');
+      });
+
+      it("should handle '의'", function() {
+        expect(ascii2hangeul('dml')).toEqual('의');
+      });
+
+      it("should handle '뛰'", function() {
+        expect(ascii2hangeul('Enl')).toEqual('뛰');
+      });
+
+    });
+
   });
 });

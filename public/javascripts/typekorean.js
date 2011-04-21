@@ -65,13 +65,13 @@ function word2hangeul(str) {
       if (isVowel(str.substr(i,2))) {
         mid = str.substr(i,2);
       } else if (isVowel(str.substr(i,1))) {
-        mid = str.substr(i,1)
+        mid = str.substr(i,1);
       } else {
-        state = "start"; continue
+        state = "start"; continue;
       }
       state = "finalConsonant";
       i += mid.length;
-    } else if (state = "finalConsonant") {
+    } else if (state == "finalConsonant") {
       nextchar2 = str.substr(i+2,1);
       end2 = str.substr(i,2);
       nextchar1 = str.substr(i+1,1);
@@ -105,7 +105,7 @@ function singlejamo(ascii) {
     'r' : 0x3131, 'R' : 0x3132, 's' : 0x3134, 'e' : 0x3137, 'E' : 0x3138,
     'f' : 0x3139, 'a' : 0x3141, 'q' : 0x3142, 'Q' : 0x3143, 't' : 0x3145,
     'T' : 0x3146, 'd' : 0x3147, 'w' : 0x3148, 'W' : 0x3149, 'c' : 0x314A,
-    'z' : 0x314B, 'x' : 0x314C, 'v' : 0x314D, 'g' : 0x314E }
+    'z' : 0x314B, 'x' : 0x314C, 'v' : 0x314D, 'g' : 0x314E };
   var c;
   if (isConsonant(ascii)) {
     c = compatibility_consonants[ascii];
@@ -122,14 +122,14 @@ function unichr(c) {
 }
 
 function isVowel(c) {
-  return (vowels[c] != null)
+  return (vowels[c] != null);
 }
 function isConsonant(c) {
   return (isInitialConsonant(c) || isFinalConsonant(c));
 }
 function isFinalConsonant(c) {
-  return (final_consonants[c] != null)
+  return (final_consonants[c] != null);
 }
 function isInitialConsonant(c) {
-  return (initial_consonants[c] != null)
+  return (initial_consonants[c] != null);
 }

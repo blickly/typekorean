@@ -26,79 +26,24 @@ var translator = new function() {
     'd' : 21, 'w' : 22, 'c' : 23,
     'z' : 24, 'v' : 26, 'g' : 27 };
 
-
-   this.ascii2hangeul = function(str) {
-    var alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    var result = "";
-    var cur_str = "";
-    var i, c;
-    for (i = 0; i < str.length; i++) {
-      c = str.charAt(i);
-      if (alpha.indexOf(c) == -1) {
-        result += word2hangeul(cur_str) + c;
-        cur_str = "";
-      } else {
-        cur_str += c;
-      }
-    }
-    result += word2hangeul(cur_str);
-    return result;
+  var unichr = function(c) {
+    if (!c) { c = 9785; }
+    var uni = '"\\u' + c.toString(16)+'"';
+    return eval(uni);
   };
 
-  var word2hangeul = function(str) {
-    var result = "";
-    var lead, mid, end;
-    var state = "start";
-    var i = 0;
-    while (1) {
-      if (state == "start") {
-        result += tochar(lead, mid, end);
-        mid = (end = "");
-        lead = str.substr(i,1);
-        if (lead == "") {
-          break;
-        } else if (isInitialConsonant(lead)) {
-          state = "vowel";
-        }
-        i += lead.length;
-      } else if (state == "vowel") {
-        if (isVowel(str.substr(i,2))) {
-          mid = str.substr(i,2);
-        } else if (isVowel(str.substr(i,1))) {
-          mid = str.substr(i,1);
-        } else {
-          state = "start"; continue;
-        }
-        state = "finalConsonant";
-        i += mid.length;
-      } else if (state == "finalConsonant") {
-        nextchar2 = str.substr(i+2,1);
-        end2 = str.substr(i,2);
-        nextchar1 = str.substr(i+1,1);
-        end1 = str.substr(i,1);
-        if (isFinalConsonant(end2) && (!isVowel(nextchar2) || nextchar2 == "")) {
-          end = end2;
-        } else if (isFinalConsonant(end1) && (!isVowel(nextchar1) || nextchar1 == "")) {
-          end = end1;
-        }
-        i += end.length;
-        state = "start";
-      }
-    }
-    return result;
+  var isFinalConsonant = function(c) {
+    return (final_consonants.hasOwnProperty(c));
   };
-
-  var tochar = function(start, mid, end) {
-    if (!start) {
-      return "";
-    } else if (!mid) {
-      return singlejamo(start);
-    }
-    lead = initial_consonants[start];
-    vowel = vowels[mid];
-    tail = end ? final_consonants[end] : 0;
-    return unichr(tail + (vowel-1) * 28 + (lead-1) * 588 + 44032);
-  }
+  var isInitialConsonant = function(c) {
+    return (initial_consonants.hasOwnProperty(c));
+  };
+  var isVowel = function(c) {
+    return (vowels.hasOwnProperty(c));
+  };
+  var isConsonant = function(c) {
+    return (isInitialConsonant(c) || isFinalConsonant(c));
+  };
 
   var singlejamo = function(ascii) {
     var compatibility_consonants = {
@@ -115,25 +60,79 @@ var translator = new function() {
     return unichr(c);
   };
 
-  var unichr = function(c) {
-    if (!c) c = 9785;
-    var uni = '"\\u' + c.toString(16)+'"';
-    return eval(uni);
+  var tochar = function(start, mid, end) {
+    if (!start) {
+      return "";
+    } else if (!mid) {
+      return singlejamo(start);
+    }
+    var lead = initial_consonants[start];
+    var vowel = vowels[mid];
+    var tail = end ? final_consonants[end] : 0;
+    return unichr(tail + (vowel-1) * 28 + (lead-1) * 588 + 44032);
   };
 
-  var isVowel = function(c) {
-    return (vowels[c] != null);
+  var word2hangeul = function(str) {
+    var result = "";
+    var lead, mid, end;
+    var state = "start";
+    var i = 0;
+    while (true) {
+      if (state === "start") {
+        result += tochar(lead, mid, end);
+        mid = (end = "");
+        lead = str.substr(i,1);
+        if (lead === "") {
+          break;
+        } else if (isInitialConsonant(lead)) {
+          state = "vowel";
+        }
+        i += lead.length;
+      } else if (state === "vowel") {
+        if (isVowel(str.substr(i,2))) {
+          mid = str.substr(i,2);
+        } else if (isVowel(str.substr(i,1))) {
+          mid = str.substr(i,1);
+        } else {
+          state = "start"; continue;
+        }
+        state = "finalConsonant";
+        i += mid.length;
+      } else if (state === "finalConsonant") {
+        var nextchar2 = str.substr(i+2,1);
+        var end2 = str.substr(i,2);
+        var nextchar1 = str.substr(i+1,1);
+        var end1 = str.substr(i,1);
+        if (isFinalConsonant(end2) && (!isVowel(nextchar2) || nextchar2 === "")) {
+          end = end2;
+        } else if (isFinalConsonant(end1) && (!isVowel(nextchar1) || nextchar1 === "")) {
+          end = end1;
+        }
+        i += end.length;
+        state = "start";
+      }
+    }
+    return result;
   };
-  var isConsonant = function(c) {
-    return (isInitialConsonant(c) || isFinalConsonant(c));
+
+  this.ascii2hangeul = function(str) {
+    var alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    var result = "";
+    var cur_str = "";
+    var i, c;
+    for (i = 0; i < str.length; i++) {
+      c = str.charAt(i);
+      if (alpha.indexOf(c) === -1) {
+        result += word2hangeul(cur_str) + c;
+        cur_str = "";
+      } else {
+        cur_str += c;
+      }
+    }
+    result += word2hangeul(cur_str);
+    return result;
   };
-  var isFinalConsonant = function(c) {
-    return (final_consonants[c] != null);
-  };
-  var isInitialConsonant = function(c) {
-    return (initial_consonants[c] != null);
-  };
-}
+}();
 
 function refresh() {
   document.forms[0].hangeul.value = translator.ascii2hangeul(document.forms[0].ascii.value);

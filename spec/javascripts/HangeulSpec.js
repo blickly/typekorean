@@ -1,4 +1,5 @@
 describe("ascii2hangeul", function() {
+  var ascii2hangeul = translator.ascii2hangeul;
 
   describe("for a single character", function() {
 

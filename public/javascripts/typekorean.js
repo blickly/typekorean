@@ -1,4 +1,4 @@
-var translator = new function() {
+var translator = (function() {
   var vowels = {
     'o' : 2, 'j' : 5, 'n' : 14,
     'k' : 1, 'i' : 3, 'O' : 4,
@@ -115,24 +115,25 @@ var translator = new function() {
     return result;
   };
 
-  this.ascii2hangeul = function(str) {
-    var alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    var result = "";
-    var cur_str = "";
-    var i, c;
-    for (i = 0; i < str.length; i++) {
-      c = str.charAt(i);
-      if (alpha.indexOf(c) === -1) {
-        result += word2hangeul(cur_str) + c;
-        cur_str = "";
-      } else {
-        cur_str += c;
+  return { ascii2hangeul: function(str) {
+      var alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+      var result = "";
+      var cur_str = "";
+      var i, c;
+      for (i = 0; i < str.length; i++) {
+        c = str.charAt(i);
+        if (alpha.indexOf(c) === -1) {
+          result += word2hangeul(cur_str) + c;
+          cur_str = "";
+        } else {
+          cur_str += c;
+        }
       }
+      result += word2hangeul(cur_str);
+      return result;
     }
-    result += word2hangeul(cur_str);
-    return result;
   };
-}();
+}());
 
 function refresh() {
   document.forms[0].hangeul.value = translator.ascii2hangeul(document.forms[0].ascii.value);
